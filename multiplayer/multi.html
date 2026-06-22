@@ -5,56 +5,27 @@
     <link rel="stylesheet" href="multi.css">
 </head>
 <body>
-
 <h2>1v1 Key Hunt</h2>
 
-<input
-    id="playerName"
-    placeholder="Enter Your Name"
->
-
+<input id="playerName" placeholder="Enter Your Name">
 <br><br>
 
-<input
-    id="roomCode"
-    placeholder="Enter Room Code"
->
-
-<button id="createRoom">
-    Create Room
-</button>
-
-<button id="joinRoom">
-    Join Room
-</button>
+<input id="roomCode" placeholder="Enter Room Code">
+<button id="createRoom">Create Room</button>
+<button id="joinRoom">Join Room</button>
 
 <h3 id="roomCodeDisplay"></h3>
-
 <div id="status"></div>
-
 <div id="grid"></div>
 
 <div id="progressBar">
-
     <div class="player">
-        <span id="p1Name">
-            Player 1
-        </span>
-        :
-        <span id="p1">0</span>/5 🔑
+        <span id="p1Name">Player 1</span>: <span id="p1">0</span>/5 🔑
     </div>
-
     <div class="player">
-        <span id="p2Name">
-            Player 2
-        </span>
-        :
-        <span id="p2">0</span>/5 🔑
+        <span id="p2Name">Player 2</span>: <span id="p2">0</span>/5 🔑
     </div>
-
 </div>
-
 <script type="module" src="multi.js"></script>
-
 </body>
 </html>
