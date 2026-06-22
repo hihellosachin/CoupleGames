@@ -26,8 +26,8 @@ function generateBoard(){
     for(let i=0;i<100;i++){
         board.push({
             color: colors[Math.floor(Math.random()*5)],
-            key: false,
-            found: false
+            key: false
+            // Removed global 'found' state to keep tracking private
         });
     }
     const keyPositions = [];
@@ -81,8 +81,10 @@ async function createRoom(){
         player2: "",
         player1Keys: 0,
         player2Keys: 0,
-        player1Found: [],
-        player2Found: [],
+        player1Found: [], // Colors found by Player 1
+        player2Found: [], // Colors found by Player 2
+        player1TilesFound: [], // SPECIFIC GRIDS discovered by Player 1
+        player2TilesFound: [], // SPECIFIC GRIDS discovered by Player 2
         winner: "",
         gameStarted: false,
         playerCount: 1,
@@ -122,13 +124,21 @@ function renderBoard(board){
     if (!grid) return;
     grid.innerHTML = "";
     
+    const role = localStorage.getItem("playerRole");
+    // Identify which personal grid tiles this specific browser session has found
+    let myTilesFound = [];
+    if(roomData) {
+        myTilesFound = role === "player1" ? (roomData.player1TilesFound || []) : (roomData.player2TilesFound || []);
+    }
+
     board.forEach((tile, index) => {
         const div = document.createElement("div");
         div.className = "tile";
         div.style.backgroundColor = tile.color;
         div.dataset.index = index;
         
-        if(tile.found){
+        // Key displays ONLY if the current player discovered this exact tile index
+        if(myTilesFound.includes(index)){
             div.innerHTML = "🔑";
             div.style.display = "flex";
             div.style.alignItems = "center";
@@ -148,52 +158,63 @@ function renderBoard(board){
 async function checkTile(index){
     if(!roomData) return;
     const tile = roomData.board[index];
-    if(tile.found){
-        alert("🔑 Key already discovered!");
+    const role = localStorage.getItem("playerRole");
+    
+    // Check personal discovery tracking lists instead of global flag
+    const p1Tiles = roomData.player1TilesFound || [];
+    const p2Tiles = roomData.player2TilesFound || [];
+    
+    if((role === "player1" && p1Tiles.includes(index)) || (role === "player2" && p2Tiles.includes(index))){
+        alert("🔑 You already discovered this key!");
         return;
     }
+    
     if(!tile.key){
         alert("❌ No Key");
         return;
     }
-    const role = localStorage.getItem("playerRole");
+    
     const customName = localStorage.getItem("storedName");
     const color = tile.color;
     const roomRef = doc(db, "rooms", currentRoom);
-    const board = [...roomData.board];
-    board[index].found = true;
 
     if(role === "player1"){
-        let found = roomData.player1Found || [];
-        if(found.includes(color)){
+        let foundColors = roomData.player1Found || [];
+        if(foundColors.includes(color)){
             alert("Already Found " + color);
             return;
         }
-        found.push(color);
+        foundColors.push(color);
+        p1Tiles.push(index); // Mark tile index as uncovered for Player 1 privately
+        
         await updateDoc(roomRef, {
-            player1Found: found,
-            player1Keys: found.length,
-            board: board
+            player1Found: foundColors,
+            player1Keys: foundColors.length,
+            player1TilesFound: p1Tiles
         });
+        
         alert("🔑 Found " + color + " key!");
-        if(found.length >= 5){
+        if(foundColors.length >= 5){
             await updateDoc(roomRef, { winner: customName });
         }
     }
     else if(role === "player2"){
-        let found = roomData.player2Found || [];
-        if(found.includes(color)){
+        let foundColors = roomData.player2Found || [];
+        if(foundColors.includes(color)){
             alert("Already Found " + color);
             return;
         }
-        found.push(color);
+        foundColors.push(color);
+        p2Tiles.push(index); // Mark tile index as uncovered for Player 2 privately
+        
         await updateDoc(roomRef, {
-            player2Found: found,
-            player2Keys: found.length,
-            board: board
+            player2Found: foundColors,
+            player2Keys: foundColors.length,
+            player2TilesFound: p2Tiles
         });
+        
         alert("🔑 Found " + color + " key!");
-        if(found.length >= 5){
+        if(foundColors.length >= 5){
             await updateDoc(roomRef, { winner: customName });
         }
     }
@@ -215,7 +236,6 @@ function watchRoom(roomCode){
             Game Started: ${data.gameStarted}
         `;
 
-        // Fixed elements to match your exact HTML structure IDs
         const p1NameEl = document.getElementById("p1Name");
         const p2NameEl = document.getElementById("p2Name");
         if(p1NameEl) p1NameEl.innerText = data.player1 || "Player 1";
