@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Hunt</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="button-container">
+
+    <button id="singleBtn">
+        🎮 Single Player
+    </button>
+
+    <button id="multiBtn">
+        ⚔️ 1v1 Multiplayer
+    </button>
+
+</div>
+
+<div id="multiplayerMenu" style="display:none;">
+
+    <br>
+
+    <button id="createRoomBtn">
+        Create Room
+    </button>
+
+    <br><br>
+
+    <input
+        type="text"
+        id="roomInput"
+        placeholder="Enter Room Code"
+    >
+
+    <button id="joinRoomBtn">
+        Join Room
+    </button>
+
+    <h3 id="roomCodeDisplay"></h3>
+
+    <h3 id="status"></h3>
+
+</div>
+
+        <div class="footer">
+            10×10 Grid • 5 Hidden Keys • Fastest Player Wins
+        </div>
+
+    </div>
+
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>
