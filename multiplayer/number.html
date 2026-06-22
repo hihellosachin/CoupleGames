@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>1v1 Number Guesser</title>
+    <link rel="stylesheet" href="number.css">
+</head>
+<body>
+<h2>1v1 Number Guesser</h2>
+
+<div id="lobbySection">
+    <input id="playerName" placeholder="Enter Your Name">
+    <br><br>
+    <input id="roomCode" placeholder="Enter Room Code">
+    <button id="createRoom">Create Room</button>
+    <button id="joinRoom">Join Room</button>
+    <h3 id="roomCodeDisplay"></h3>
+    <div id="status"></div>
+</div>
+
+<div id="setupSection" style="display: none;">
+    <h3>Set Your Secret 4-Digit Number</h3>
+    <p>Your opponent will try to guess this number!</p>
+    <input type="password" id="secretNumberInput" maxlength="4" placeholder="e.g. 1234" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+    <button id="submitSecretBtn">Lock In Number</button>
+    <div id="setupStatus">Waiting for you to lock in a number...</div>
+</div>
+
+<div id="gameSection" style="display: none;">
+    <h3>Guess the Opponent's Number!</h3>
+    <div id="guessControls">
+        <input type="text" id="guessInput" maxlength="4" placeholder="e.g. 2354" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        <button id="submitGuessBtn">Submit Guess</button>
+    </div>
+    
+    <div id="feedbackDisplay">Enter a 4-digit guess to see hints!</div>
+
+    <h4>Your Guess History:</h4>
+    <div id="historyLog"></div>
+</div>
+
+<div id="progressBar">
+    <div class="player">
+        <span id="p1Name">Player 1</span> Status: <span id="p1Status">Not Ready ❌</span>
+    </div>
+    <div class="player">
+        <span id="p2Name">Player 2</span> Status: <span id="p2Status">Not Ready ❌</span>
+    </div>
+</div>
+
+<script type="module" src="number.js"></script>
+</body>
+</html>
